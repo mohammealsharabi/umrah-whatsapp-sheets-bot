@@ -21,7 +21,9 @@ const sheetsService = new GoogleSheetsService({
   serviceAccountFile: process.env.GOOGLE_SERVICE_ACCOUNT_FILE,
   spreadsheetId: process.env.SPREADSHEET_ID,
   sheetName: process.env.SHEET_NAME,
-  matchWordCount: MATCH_WORD_COUNT
+  matchWordCount: MATCH_WORD_COUNT,
+  nameColumn: process.env.NAME_COLUMN || 'E',
+  colorColumn: process.env.COLOR_COLUMN || 'D'
 });
 
 const whatsappService = new WhatsAppService({
@@ -120,5 +122,6 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Umrah WhatsApp Sheets Bot running on port ${PORT}`);
 });
+
 
 
