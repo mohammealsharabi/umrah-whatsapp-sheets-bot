@@ -64,7 +64,30 @@ app.get('/webhook', (req, res) => {
   return res.sendStatus(403);
 });
 
-// WhatsApp incoming messages endpoint.
+// Direct server-side test endpoint for Render.
+app.get('/test-color', async (req, res) => {
+  try {
+    if (req.query.token !== VERIFY_TOKEN) {
+      return res.sendStatus(403);
+    }
+    const filename = req.query.filename;
+    if (!filename) {
+      return res.status(400).json({
+        ok: false,
+        error: 'filename_required'
+      });
+    }
+    const result = await sheetsService.verifyAndColor(filename);
+    console.log('TEST_COLOR_RESULT:', JSON.stringify(result));
+    return res.json(result);
+  } catch (error) {
+    console.error('TEST_COLOR_ERROR:', error);
+    return res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});// WhatsApp incoming messages endpoint.
 app.post('/webhook', async (req, res) => {
   // Respond fast so Meta does not retry while we process.
   res.sendStatus(200);
@@ -122,6 +145,7 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Umrah WhatsApp Sheets Bot running on port ${PORT}`);
 });
+
 
 
 
