@@ -7,10 +7,17 @@ export class GoogleSheetsService {
     this.matchWordCount = Number(matchWordCount || 3);
     this.nameColumn = String(nameColumn || 'E').toUpperCase();
     this.colorColumn = String(colorColumn || 'D').toUpperCase();
-    const auth = new google.auth.GoogleAuth({
-      keyFile: serviceAccountFile,
+    const authOptions = {
       scopes: ['https://www.googleapis.com/auth/spreadsheets']
-    });
+    };
+    if (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64) {
+      authOptions.credentials = JSON.parse(
+        Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf8')
+      );
+    } else {
+      authOptions.keyFile = serviceAccountFile;
+    }
+    const auth = new google.auth.GoogleAuth(authOptions);
     this.sheets = google.sheets({ version: 'v4', auth });
     this.cachedSheetId = null;
   }
@@ -133,3 +140,4 @@ export class GoogleSheetsService {
     };
   }
 }
+
