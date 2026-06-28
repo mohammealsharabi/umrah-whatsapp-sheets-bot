@@ -1,4 +1,4 @@
-import 'dotenv/config';
+﻿import 'dotenv/config';
 import express from 'express';
 import { GoogleSheetsService } from './sheets.js';
 import { WhatsAppService } from './whatsapp.js';
@@ -34,7 +34,13 @@ const batchStore = new BatchStore({
   delayMs: REPORT_DELAY_MINUTES * 60 * 1000,
   onFlush: async (sender, batch) => {
     const report = formatReport(batch);
-    await whatsappService.sendText(sender, report);
+    try {
+      await whatsappService.sendText(sender, report);
+    } catch (error) {
+      console.error('WhatsApp report failed, but bot will continue:', error.message);
+      console.log('Report content:');
+      console.log(report);
+    }
   }
 });
 
@@ -76,12 +82,12 @@ app.post('/webhook', async (req, res) => {
           if (!sender) continue;
 
           if (!isAllowedSender(sender)) {
-            await whatsappService.sendText(sender, 'غير مصرح لك باستخدام هذا البوت.');
+            await whatsappService.sendText(sender, 'ط؛ظٹط± ظ…طµط±ط­ ظ„ظƒ ط¨ط§ط³طھط®ط¯ط§ظ… ظ‡ط°ط§ ط§ظ„ط¨ظˆطھ.');
             continue;
           }
 
           if (!isPdfDocument(message)) {
-            await whatsappService.sendText(sender, 'الرجاء إرسال أو تحويل ملفات PDF فقط.');
+            await whatsappService.sendText(sender, 'ط§ظ„ط±ط¬ط§ط، ط¥ط±ط³ط§ظ„ ط£ظˆ طھط­ظˆظٹظ„ ظ…ظ„ظپط§طھ PDF ظپظ‚ط·.');
             continue;
           }
 
@@ -91,8 +97,8 @@ app.post('/webhook', async (req, res) => {
             batchStore.addResult(sender, {
               ok: false,
               status: 'missing_filename',
-              filename: 'بدون اسم ملف',
-              name: 'لم يصل اسم الملف من واتساب'
+              filename: 'ط¨ط¯ظˆظ† ط§ط³ظ… ظ…ظ„ظپ',
+              name: 'ظ„ظ… ظٹطµظ„ ط§ط³ظ… ط§ظ„ظ…ظ„ظپ ظ…ظ† ظˆط§طھط³ط§ط¨'
             });
             continue;
           }
@@ -114,3 +120,4 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Umrah WhatsApp Sheets Bot running on port ${PORT}`);
 });
+
