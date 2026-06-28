@@ -1,0 +1,19 @@
+{
+  "name": "umrah-whatsapp-sheets-bot",
+  "version": "1.0.0",
+  "description": "WhatsApp bot for Umrah visa PDF filename matching with Google Sheets coloring and delayed report.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "googleapis": "^144.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
